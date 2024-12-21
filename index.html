@@ -32,9 +32,6 @@
                     return 1;
                 } else {
                     console.log(`draw! let's do it again`);
-                    let newHumanSelection = getHumanChoice();
-                    let newComputerSelection = getComputerChoice();
-                    playRound(newHumanSelection, newComputerSelection);
                     return 0; }
         }
         
@@ -43,6 +40,7 @@
         function playGame(){
             let humanScore = 0;
             let computerScore = 0;
+            let drawCount = 0;
 
             for(let i = 0; i < 5; i++){
                 let humanSelection = getHumanChoice();
@@ -54,12 +52,13 @@
                 } else if (result === -1) {
                     computerScore++;
                 } else {
+                    drawCount++;
                     i--;
                 }
             }
             
-            if (humanScore > computerScore) console.log(`${humanScore}-${computerScore} congrates, you won!`);
-            else console.log(`${humanScore}-${computerScore} game over ..`);
+            if (humanScore > computerScore) console.log(`${humanScore}-${computerScore} and ${drawCount} draws. congrates, you won!`);
+            else console.log(`${humanScore}-${computerScore} and ${drawCount} draws. game over ..`);
         }
     </script>
 </body>
