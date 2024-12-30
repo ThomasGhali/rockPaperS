@@ -3,72 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Rock Paper Scissors Game</title>
+    <style>
+        /* Moved inline styles to CSS for better readability */
+        #container {
+            width: 100%;
+            height: 110px;
+        }
+        button {
+            width: 33%;
+            height: 100px;
+            font-size: larger;
+            color: white;
+        }
+        #rock { background-color: blue; }
+        #paper { background-color: gray; }
+        #scissors { background-color: gold; }
+        #result, #endResult {
+            text-align: center;
+            font-size: larger;
+        }
+        #endResult {
+            font-size: x-large;
+            color: rgb(18, 18, 80);
+        }
+        #gif {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <div id="conatiner" style="width: 100%; height: 110px;">
-        <button id="rock" style="width: 33%; height: 100px; background-color: blue;font-size: larger;color:white;">Rock</button>
-        <button id="paper" style="width: 33%; height: 100px; background-color: gray;font-size: larger;">Paper</button>
-        <button id="scissors" style="width: 33%; height: 100px; background-color: gold;font-size: larger;">Scissors</button>    
+    <div id="container">
+        <button id="rock">Rock</button>
+        <button id="paper">Paper</button>
+        <button id="scissors">Scissors</button>    
     </div>
-    <p id="result" style="text-align: center; font-size: larger;color: rgb(44, 44, 215);"></p>
-    <div id="gif" style="text-align: center;"></div>  <!-- winning or losing gifs -->
-    </div>
-    <p id="endResult" style="text-align: center; font-size: x-large; color: rgb(18, 18, 80);"></p>
+    <p id="result" style="color: rgb(44, 44, 215);"></p>
+    <div id="gif"></div>  <!-- winning or losing gifs -->
+    <p id="endResult"></p>
+    
     <script>
-        
-        document.getElementById('rock').addEventListener('click', ()=> playRound('rock'));
-        document.getElementById('paper').addEventListener('click', ()=> playRound('paper'));
-        document.getElementById('scissors').addEventListener('click', ()=> playRound('scissors'));
+        // Event listeners for buttons
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', () => playRound(button.id));
+        });
 
         let computerScore = 0;
         let humanScore = 0; 
         let drawCount = 0;
 
-        function playRound(humanChoice){
-            const buttonIds = ['rock', 'paper', 'scissors'];
+        function playRound(humanChoice) {
+            const computerChoice = getComputerChoice();
+            let resultMessage;
 
-            const computerChoice = getComputerChoice()
-            if (humanChoice == "rock" && computerChoice == "paper" || 
-                humanChoice == "paper" && computerChoice == "scissors" ||
-                humanChoice == "scissors" && computerChoice == "rock")
-                {
-                    document.getElementById('result').innerText=`you lose! as ${computerChoice} beats ${humanChoice}`;
-                    computerScore++;
-                } else if (humanChoice === computerChoice) {
-                document.getElementById('result').innerText=`draw! let's do it again`;
+            // Simplified win/lose/draw logic
+            if (humanChoice === computerChoice) {
+                resultMessage = `Draw! Let's do it again`;
                 drawCount++;
-                } else {
-                    document.getElementById('result').innerText=`you win! as ${humanChoice} beats ${computerChoice}`;
-                    humanScore++;
-                }
-            
-            document.getElementById('endResult').innerText= `you:  ${humanScore}  -  PC:  ${computerScore}  -- Draws: ${drawCount}`;    
-            if (humanScore == 5){ 
-                for (let id of buttonIds) {
-                    const button = document.getElementById(id);
-                    if (button.style.display !== 'none') {
-                        button.style.display = 'none';
-                    }
-                }
-                document.getElementById('result').innerText='Congratulation! you won the game'
-                document.getElementById('gif').innerHTML= '<img src ="you-won-this-time-delightfullydani.gif" alt="A funny GIF" style="width: auto; height: auto;">';
-            } else if (computerScore == 5){
-                for (let id of buttonIds) {
-                    const button = document.getElementById(id);
-                    if (button.style.display !== 'none') {
-                        button.style.display = 'none';
-                    }
-                }
-                document.getElementById('result').innerText='OoOops, game over'
-                document.getElementById('gif').innerHTML= '<img src ="game-over-dwayne-johnson.gif" alt="A funny GIF" style="width: auto; height: auto;">';
+            } else if (
+                (humanChoice === "rock" && computerChoice === "scissors") ||
+                (humanChoice === "paper" && computerChoice === "rock") ||
+                (humanChoice === "scissors" && computerChoice === "paper")
+            ) {
+                resultMessage = `You win! ${humanChoice} beats ${computerChoice}`;
+                humanScore++;
+            } else {
+                resultMessage = `You lose! ${computerChoice} beats ${humanChoice}`;
+                computerScore++;
+            }
+
+            document.getElementById('result').innerText = resultMessage;
+            document.getElementById('endResult').innerText = `You: ${humanScore} - PC: ${computerScore} -- Draws: ${drawCount}`;
+
+            // Check for game over conditions
+            if (humanScore === 5 || computerScore === 5) {
+                endGame(humanScore === 5);
             }
         }
 
-        function getComputerChoice(){
-            const Hand = ["rock", "paper", "scissors"];
-            return Hand [Math.floor(Math.random()*3)];
-        }        
+        function endGame(humanWon) {
+            // Hide buttons
+            document.querySelectorAll('button').forEach(button => button.style.display = 'none');
+            // Display end game message and GIF
+            document.getElementById('result').innerText = humanWon ? 'Congratulations! You won the game' : 'Oops, game over';
+            document.getElementById('gif').innerHTML = `<img src="${humanWon ? 'you-won-this-time-delightfullydani.gif' : 'game-over-dwayne-johnson.gif'}" alt="A funny GIF" style="width: auto; height: auto;">`;
+        }
+
+        function getComputerChoice() {
+            const hands = ["rock", "paper", "scissors"];
+            return hands[Math.floor(Math.random() * hands.length)];
+        }
     </script>
 </body>
 </html>
